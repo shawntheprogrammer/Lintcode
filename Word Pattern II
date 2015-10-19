@@ -1,13 +1,12 @@
 /* 
-Given a pattern and a string str, find if str follows the same pattern.
-Here follow means a full match, such that there is a bijection between a letter in pattern and a non-empty substring in str.
-
-Examples:
-pattern = "abab", str = "redblueredblue" should return true.
-pattern = "aaaa", str = "asdasdasdasd" should return true.
-pattern = "aabb", str = "xyzabcxzyabc" should return false.
-Notes:
-You may assume both pattern and str contains only lowercase letters.
+** Given a pattern and a string str, find if str follows the same pattern.
+** Here follow means a full match, such that there is a bijection between a letter in pattern and a non-empty substring in str.
+** Examples:
+** pattern = "abab", str = "redblueredblue" should return true.
+** pattern = "aaaa", str = "asdasdasdasd" should return true.
+** pattern = "aabb", str = "xyzabcxzyabc" should return false.
+** Notes:
+** You may assume both pattern and str contains only lowercase letters.
 */
 
 public class Solution {
@@ -15,12 +14,16 @@ public class Solution {
         if (pattern == null || str == null) {
             return false;
         }
+        //Key -> Val pairs
         HashMap<Character, String> map = new HashMap<>();
+        //Val -> Key pairs
         HashMap<String, Character> back_map = new HashMap<>();
         return isMatch(pattern, 0, str, map, back_map);
     }
     
+    // DFS + backtracking
     public boolean isMatch(String pattern, int ps, String str, HashMap<Character, String> map, HashMap<String, Character> back_map) {
+        // base case : travel to the bottom
         if (ps == pattern.length() && str.equals("")) {
             return true;
         }
@@ -28,6 +31,7 @@ public class Solution {
             return false;
         }
         char key = pattern.charAt(ps);
+        // if map has previously stores this character, there is a key -> val and val -> key pair
         if (map.containsKey(key)) {
             String val = map.get(key);
             if (!back_map.containsKey(val) || !back_map.get(val).equals(key) || !str.startsWith(val)) {
@@ -35,8 +39,12 @@ public class Solution {
             }
             return isMatch(pattern, ps + 1, str.substring(val.length()), map, back_map);
         }
+        
+        // this character first time shows up, traverse all the posibilities of key -> val pairs.
+        // the so-called backtracking
         for (int i = 1; i <= str.length(); i++) {
             String val = str.substring(0, i);
+            //this substring has already been used
             if (back_map.containsKey(val)) {
                 continue;
             } else {
