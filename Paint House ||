@@ -1,0 +1,52 @@
+/*
+**    There are a row of n houses, each house can be painted with one of the k colors. The cost of painting each house with a certain color is differ
+**     You have to paint all the houses such that no two adjacent houses have the same color.
+**    The cost of painting each house with a certain color is represented by a n x k cost matrix. For example, costs[0][0] is the cost of painting house 
+**    with color 0; costs[1][2] is the cost of painting house 1 with color 2, and so on... Find the minimum cost to paint all houses.
+**    
+**    Note:
+**    All costs are positive integers.
+**    
+**    Follow up:
+**    Could you solve it in O(nk) runtime?
+*/
+
+public class Solution {
+    public int minCostII(int[][] costs) {
+        if (costs == null || costs.length == 0) {
+            return 0;
+        }
+        //for house i, the minimum total cost if use color j has two conditions
+        //1. the minimum total cost of house i-1 uses a different color (some not j color)  -> minimum total cost of house i-1 + costs[i][j]
+        //2. the minimum total cost of house i-1 uses the same color (color j)  -> second minimum total cost of house i-1 + costs[i][j]
+        
+        //the color of the last house uses (the minimum total cost's color)
+        int lastMinIndex = -1;
+        int lastMinTotal = 0;
+        int lastSecondTotal = 0;
+        for (int i = 0; i < costs.length; i++) {
+            int localMin = Integer.MAX_VALUE;
+            int localSecondMin = localMin;
+            int localIndex = 0;
+            for (int j = 0; j < costs[0].length; j++) {
+                int cost = 0;
+                if (j == lastMinIndex) {
+                    cost = costs[i][j] + lastSecondTotal;
+                } else {
+                    cost = costs[i][j] + lastMinTotal;
+                }
+                if (cost <= localMin) {
+                    localSecondMin = localMin;
+                    localMin = cost;
+                    localIndex = j;
+                } else if (cost <= localSecondMin) {
+                    localSecondMin = cost;
+                }
+            }
+            lastMinIndex = localIndex;
+            lastMinTotal = localMin;
+            lastSecondTotal = localSecondMin;
+        }
+        return lastMinTotal;
+    }
+}
