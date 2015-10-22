@@ -1,0 +1,91 @@
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie trie = new Trie();
+ * trie.insert("lintcode");
+ * trie.search("lint"); will return false
+ * trie.startsWith("lint"); will return true
+ */
+class TrieNode {
+    // Initialize your data structure here.
+        public char c;
+        public TrieNode[] next = new TrieNode[26];
+        public boolean isLeaf;
+        public TrieNode() {
+            
+        }
+        public TrieNode(char c) {
+            this.c = c;
+        }
+        public void setToLeaf() {
+            this.isLeaf = true;
+        }
+        public boolean isLeaf() {
+            return this.isLeaf;
+        }
+}
+
+public class Solution {
+    private TrieNode root;
+
+    public Solution() {
+        root = new TrieNode();
+    }
+
+    // Inserts a word into the trie.
+    public void insert(String word) {
+        if (word == null || word.length() == 0) {
+            return;
+        }
+        //the runner to traverse the trie
+        TrieNode cur = root;
+        
+        //traverse the trie, if null make a new node
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            int index = c - 'a';
+            if (cur.next[index] == null) {
+                cur.next[index] = new TrieNode(c);
+            }
+            cur = cur.next[index];
+        }
+        cur.setToLeaf();
+    }
+
+    // Returns if the word is in the trie.
+    public boolean search(String word) {
+        if (word == null || word.length() == 0) {
+            return false;
+        }
+        //search starts from root
+        TrieNode cur = root;
+        
+        //if this char's corresponding node is null, return false
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            int index = c - 'a';
+            if (cur.next[index] == null) {
+                return false;
+            }
+            cur = cur.next[index];
+        }
+        return cur.isLeaf();
+    }
+
+    // Returns if there is any word in the trie
+    // that starts with the given prefix.
+    public boolean startsWith(String prefix) {
+        if (prefix == null) {
+            return false;
+        }
+        TrieNode cur = root;
+        for (int i = 0; i < prefix.length(); i++) {
+            char c = prefix.charAt(i);
+            int index = c - 'a';
+            if (cur.next[index] == null) {
+                return false;
+            }
+            cur = cur.next[index];
+        }
+        return true;
+    }
+}
