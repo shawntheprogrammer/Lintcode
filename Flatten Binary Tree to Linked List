@@ -1,0 +1,46 @@
+/**
+ * Definition of TreeNode:
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left, right;
+ *     public TreeNode(int val) {
+ *         this.val = val;
+ *         this.left = this.right = null;
+ *     }
+ * }
+ */
+public class Solution {
+    /**
+     * @param root: a TreeNode, the root of the binary tree
+     * @return: nothing
+     */
+    public void flatten(TreeNode root) {
+        if (root == null) {
+          return;
+        }
+        flat(root);
+    }
+    // this function preorder flatter a tree, and returns the tree's head and tail
+    public TreeNode[] flat(TreeNode root) {
+        TreeNode[] result = new TreeNode[2];
+        if (root == null) {
+          return result;
+        }
+        result[0] = root;
+        //flattern the left subtree and right subtree
+        TreeNode[] left = flat(root.left);
+        TreeNode[] right = flat(root.right);
+        //disconnect the pointer
+        root.left = null;
+        //left's subtree might be null
+        root.right = (left[0] == null) ? right[0] : left[0];
+        if (left[1] != null) {
+          left[1].right = right[0];
+        }
+        //right subtree could also be null, in that case, the tail is the left's subtree's tail
+        result[1] = (right[1] == null) ? left[1] : right[1];
+        //what if left and right substrees' tail are both null? Then tail is itself
+        result[1] = (result[1] == null) ? root : result[1]:
+        return result;
+    }
+}
