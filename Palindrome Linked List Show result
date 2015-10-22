@@ -1,0 +1,52 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+public class Solution {
+    /**
+     * @param head a ListNode
+     * @return a boolean
+     */
+    public boolean isPalindrome(ListNode head) {
+        // Write your code here
+        if (head == null || head.next == null) {
+            return true;
+        }
+        //count the number of nodes
+        int num = 0;
+        ListNode cur = head;
+        while (cur != null) {
+            cur = cur.next;
+            num++;
+        }
+        //half stands for the distance from the second half to the head
+        //note it's (num + 1) / 2  eg. num = 3 half = 2 the second half's head is the third node,
+        // which is 2 nodes away from the head
+        int half = (num + 1) / 2;
+        ListNode shead = head;
+        for (int i = 0; i < half; i++) {
+            shead = shead.next;
+        }
+        // reverse the second half
+        ListNode last = null;
+        for (int i = 0; i < num / 2; i++) {
+            ListNode next = shead.next;
+            shead.next = last;
+            last = shead;
+            shead = next;
+        }
+        cur = head;
+        while (last != null) {
+            if (cur.val != last.val) {
+                return false;
+            }
+            cur = cur.next;
+            last = last.next;
+        }
+        return true;
+    }
+}
