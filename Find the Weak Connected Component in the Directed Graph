@@ -1,0 +1,57 @@
+/**
+ * Definition for Directed graph.
+ * class DirectedGraphNode {
+ *     int label;
+ *     ArrayList<DirectedGraphNode> neighbors;
+ *     DirectedGraphNode(int x) { label = x; neighbors = new ArrayList<DirectedGraphNode>(); }
+ * };
+ */
+public class Solution {
+    /**
+     * @param nodes a array of Directed graph node
+     * @return a connected set of a directed graph
+     */
+    public class Node {
+        public int label;
+        public ArrayList<Node> neighbors;
+        public DirectedGraphNode;
+        public Node(DirectedGraphNode parent) {
+            this.label = parent.label;
+            neighbors = new ArrayList<Node>();
+        }
+    }
+    
+    public List<Node> deepCopy(ArrayList<DirectedGraphNode> nodes) {
+        List<Node> copy = new ArrayList<>();
+        HashMap<DirectedGraphNode, Node> map = new HashMap<>();
+        //copy  node's label and put in map
+        for (int i = 0; i < nodes.size(); i++) {
+            Node n = new Node(nodes.get(i));
+            map.put(nodes.get(i), n);
+        }
+        //copy node's neighbors
+        for (int i = 0; i < nodes.size(); i++) {
+            DirectedGraphNode node = nodes.get(i);
+            Node n = map.get(node);
+            for (DirectedGraphNode neighbor : node.neighbors) {
+                n.neighbors.add(map.get(neighbor));
+            }
+        }
+        return copy;
+    }
+    
+    public List<List<Integer>> connectedSet2(ArrayList<DirectedGraphNode> nodes) {
+        // Write your code here
+        if (nodes == null || nodes.size() == 0) {
+            return new ArrayList<List<Integer>>();
+        }
+        List<Node> list = deepCopy(nodes);
+        List<List<Integer>> result = new ArrayList<>();
+        HashMap<DirectedGraphNode, Boolean> visited = new HashMap<>();
+        for (DirectedGraphNode node : nodes) {
+            if (!visited.containsKey(node)) {
+                visit(node, map, result);
+            }
+        }
+    }
+}
