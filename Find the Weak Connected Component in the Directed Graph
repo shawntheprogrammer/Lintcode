@@ -13,45 +13,71 @@ public class Solution {
      */
     public class Node {
         public int label;
-        public ArrayList<Node> neighbors;
-        public DirectedGraphNode;
+        public HashSet<Node> neighbors;
         public Node(DirectedGraphNode parent) {
             this.label = parent.label;
-            neighbors = new ArrayList<Node>();
+            neighbors = new HashSet<Node>();
         }
     }
     
     public List<Node> deepCopy(ArrayList<DirectedGraphNode> nodes) {
         List<Node> copy = new ArrayList<>();
         HashMap<DirectedGraphNode, Node> map = new HashMap<>();
-        //copy  node's label and put in map
+        
+        //copy  node's label and put in map, put in copy list
         for (int i = 0; i < nodes.size(); i++) {
             Node n = new Node(nodes.get(i));
             map.put(nodes.get(i), n);
+            copy.add(n);
         }
-        //copy node's neighbors
+        
+        //copy node's neighbors and put node to neighbors list
         for (int i = 0; i < nodes.size(); i++) {
             DirectedGraphNode node = nodes.get(i);
             Node n = map.get(node);
             for (DirectedGraphNode neighbor : node.neighbors) {
-                n.neighbors.add(map.get(neighbor));
+                Node nn = map.get(neighbor);
+                if (!n.neighbors.contains(nn)) {
+                    n.neighbors.add(nn);
+                }
+                if (!nn.neighbors.contains(n)) {
+                    nn.neighbors.add(n);
+                }
             }
         }
+        
         return copy;
     }
     
     public List<List<Integer>> connectedSet2(ArrayList<DirectedGraphNode> nodes) {
-        // Write your code here
         if (nodes == null || nodes.size() == 0) {
             return new ArrayList<List<Integer>>();
         }
+        
         List<Node> list = deepCopy(nodes);
         List<List<Integer>> result = new ArrayList<>();
-        HashMap<DirectedGraphNode, Boolean> visited = new HashMap<>();
-        for (DirectedGraphNode node : nodes) {
+        HashMap<Node, Boolean> visited = new HashMap<>();
+        
+        // dfs and add the list to result
+        for (Node node : list) {
             if (!visited.containsKey(node)) {
-                visit(node, map, result);
+                List<Integer> group = new ArrayList<>();
+                visit(node, visited, group);
+                Collections.sort(group);
+                result.add(group);
             }
         }
+        return result;
+    }
+    
+    // dfs visit each undirected node, and add the component to the list
+    public void visit(Node node, HashMap<Node, Boolean> visited, List<Integer> group) {
+        visited.put(node, true);
+        for (Node neighbor : node.neighbors) {
+            if (!visited.containsKey(neighbor)) {
+                visit(neighbor, visited, group);
+            }
+        }
+        group.add(node.label);
     }
 }
