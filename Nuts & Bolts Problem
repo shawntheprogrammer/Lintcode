@@ -1,0 +1,79 @@
+/**
+ * public class NBCompare {
+ *     public int cmp(String a, String b);
+ * }
+ * You can use compare.cmp(a, b) to compare nuts "a" and bolts "b",
+ * if "a" is bigger than "b", it will return 1, else if they are equal,
+ * it will return 0, else if "a" is smaller than "b", it will return -1.
+ * When "a" is not a nut or "b" is not a bolt, it will return 2, which is not valid.
+*/
+public class Solution {
+    /**
+     * @param nuts: an array of integers
+     * @param bolts: an array of integers
+     * @param compare: a instance of Comparator
+     * @return: nothing
+     */
+    public void sortNutsAndBolts(String[] nuts, String[] bolts, NBComparator compare) {
+        // write your code here
+        if (nuts == null || bolts == null || nuts.length != bolts.length || compare == null) {
+            return;
+        }
+        quicksort(nuts, bolts, 0, nuts.length - 1, compare);
+    }
+    
+    /**
+     * @param nuts: an array of integers
+     * @param bolts: an array of integers
+     * @param start: the start position of the array
+     * @param end: the end position of the array
+     * @param compare: a instance of Comparator
+     * @return: nothing
+     */    
+    public void quicksort(String[] nuts, String[] bolts, int start, int end, NBComparator compare) {
+        if (start >= end) {
+            return;
+        }
+        String nut = nuts[start];
+        int index = partition(bolts, start, end, nut, compare);
+        String bolt = bolts[index];
+        partition(nuts, start, end, bolt, compare);
+        quicksort(nuts, bolts, start, index - 1, compare);
+        quicksort(nuts, bolts, index + 1, end, compare);
+    }
+
+    /**
+     * @param arr: an array of integers
+     * @param start: the start position of the array
+     * @param end: the end position of the array
+     * @param target: the pivot element to be compared to seperate the array
+     * @param compare: a instance of Comparator
+     * @return: the final index of the target after partition is done 
+     */      
+    public int partition(String[] arr, int start, int end, String target, NBComparator compare) {
+        if (start >= end) {
+            return start;
+        }
+        for (int i = start; i <= end - 1; i++) {
+            String s = arr[i];
+            if (compare.cmp(s, target) == -1 || compare.cmp(target, s) == 1) {
+                swap(arr, i, start++);
+            } else if(compare.cmp(s, target) == 0 || compare.cmp(target, s) == 0) {
+                swap(arr, i--, end);
+            }
+        }
+        swap(arr, start, end);
+        return start;
+    } 
+    
+    /**
+     * @param arr: an array of integers
+     * @param i: the start position of the array
+     * @param j: the end position of the array
+     */          
+    public void swap(String[] arr, int i, int j) {
+        String temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+};
