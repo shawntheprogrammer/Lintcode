@@ -1,0 +1,77 @@
+public class Solution {
+    public String alienOrder(String[] words) {
+        if (words == null || words.length == 0) {
+            return "";
+        }
+        //order relationship only exists between words[i] and words[i+1]
+        
+        //adjacent list
+        HashMap<Character, HashSet<Character>> adj = new HashMap<>();
+        //scan through all the words and build the keys of adj list
+        for (String word : words) {
+            for (int i = 0; i < word.length(); i++) {
+                char letter = word.charAt(i);
+                if (!adj.containsKey(letter)) {
+                    adj.put(letter, new HashSet<>());
+                }
+            }
+        }
+        
+        //find the order between w[i] and w[i+1]
+        for (int i = 0; i < words.length - 1; i++) {
+            String w1 = words[i];
+            String w2 = words[i + 1];
+            //find the leftmost different letter w1 and w2 differ
+            int j = 0;
+            while (j < w1.length() && j < w2.length()) {
+                char c1 = w1.charAt(j);
+                char c2 = w2.charAt(j);
+                if (c1 != c2) {
+                    adj.get(c1).add(c2);
+                    break;
+                }
+                j++;
+            }
+        }
+        
+        //flag contains letter that has been visited, 0-> unvisited 1->visiting 2->visited
+        HashMap<Character, Integer> visited = new HashMap<>();
+        for (Character c : adj.keySet())
+            visited.put(c, 0);
+            
+        //result
+        LinkedList<Character> result = new LinkedList<>();
+        for (Character c : adj.keySet()) {
+            if (visited.get(c) == 0) {
+                if (!dfs(c, adj, visited, result)) {
+                    return "";
+                }
+            }
+        }
+        //linkedlist to return string type
+        StringBuilder sb = new StringBuilder();
+        for (Character c : result)
+            sb.append(c);
+        return sb.toString();
+    }
+    
+    public boolean dfs(char c, HashMap<Character, HashSet<Character>> adj, HashMap<Character, Integer> visited, LinkedList<Character> result) {
+        //set the status as visiting
+        visited.put(c, 1);
+        for (Character neighbor : adj.get(c)) {
+            if (visited.get(neighbor) == 0) {
+                if(!dfs(neighbor, adj, visited, result)) {
+                    return false;
+                }
+            //find a loop, return false
+            }else if (visited.get(neighbor) == 1) {
+                return false;
+            }
+        }
+        //add it to the head of the list
+        result.add(0, c);
+        //set the status as visited
+        visited.put(c, 2);
+        return true;
+    }
+}
