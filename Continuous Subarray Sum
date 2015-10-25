@@ -1,0 +1,37 @@
+public class Solution {
+    /**
+     * @param A an integer array
+     * @return  A list of integers includes the index of the first number and the index of the last number
+     */
+    public ArrayList<Integer> continuousSubarraySum(int[] A) {
+        // Write your code here
+        if (A == null || A.length == 0) {
+            return new ArrayList<Integer>();
+        }
+        
+        ArrayList<Integer> result = new ArrayList<>();
+        //idea: scan through the array, start to mark the current max subarray's start position that ends at th//iterator's cur 
+        int max = A[0];
+        int localMax = A[0];
+        int start = 0;
+        int resultStart = 0;
+        int resultEnd = 0;
+        
+        for (int i = 1; i < A.length; i++) {
+            // local compare max sum end at i and i - 1 and reset the start position if necessary
+            if (A[i] >= localMax + A[i]) {
+                start = i;
+            } 
+            localMax = Math.max(A[i], localMax + A[i]);
+            // global compare the max, reset resultStart and resultEnd if necessary
+            if (localMax >= max) {
+                resultStart = start;
+                resultEnd = i;
+            }
+            max = Math.max(localMax, max);
+        }
+        result.add(resultStart);  
+        result.add(resultEnd);
+        return result;
+    }
+}
