@@ -1,0 +1,43 @@
+public class Solution {
+    /**
+     * @param matrix an integer matrix
+     * @return the coordinate of the left-up and right-down number
+     */
+    public int[][] submatrixSum(int[][] matrix) {
+        // Write your code here
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return matrix;
+        }
+        int[][] result = new int[2][2];
+        //get the sum matrix
+        int[][] sum = new int[matrix.length + 1][matrix[0].length + 1];
+        for (int i = 1; i < sum.length; i++) {
+            for (int j = 1; j < sum[0].length; j++) {
+                sum[i][j] = sum[i - 1][j] + sum[i][j - 1] - sum[i - 1][j - 1] + matrix[i - 1][j - 1];
+            }
+        }
+        
+        //scan over the sum matrix, put the current diff in map, if there one collumn (j, m) has the same diff in map
+        //which means (i, m) to (j -1 , col - 1) sum to zero
+        for (int i = 0; i < sum.length - 1; i++) {
+            for (int j = i + 1; j < sum.length; j++) {
+                HashMap<Integer, Integer> map = new HashMap<>();
+                for (int col = 1; col < sum[0].length; col++) {
+                    int diff = sum[j][col] - sum[i][col];
+                    if (diff == 0) {
+                        result[0][0] = i; result[0][1] = 0;
+                        result[1][0] = j - 1; result[1][1] = col - 1;
+                        return result;
+                    } else if (map.containsKey(diff)) {
+                        int m = map.get(diff);
+                        result[0][0] = i; result[0][1] = m;
+                        result[1][0] = j - 1; result[1][1] = col - 1;
+                    } else {
+                        map.put(diff, col);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+}
