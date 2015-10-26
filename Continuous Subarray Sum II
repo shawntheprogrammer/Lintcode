@@ -1,0 +1,43 @@
+public class Solution {
+    /**
+     * @param A an integer array
+     * @return  A list of integers includes the index of the first number and the index of the last number
+     */
+    public ArrayList<Integer> continuousSubarraySumII(int[] A) {
+        // Write your code here
+        if (A == null || A.length == 0) {
+            return new ArrayList<Integer>();
+        }
+        //max subarray starting position < ending position
+        int s0 = 0;
+        int[] r0 = new int[]{0, 0};
+        int sum0 = A[0];
+        int max0 = A[0];
+        for (int i = 1; i < A.length; i++) {
+            if (sum0 < 0) {
+                s0 = i;
+            }
+            sum0 = Math.max(sum0 + A[i], A[i]);
+            if (sum0 > max0) {
+                r0[0] = s0; r0[1] = i;
+            }
+            max0 = Math.max(sum0, max0);
+        }
+        
+        //max subarray starts from index 0
+        int left = 0;
+        int right = A.length - 1;
+        int sum = A[left] + A[right];
+        int max = sum;
+        int r1 = new int[2];
+        while (left + 1 < right) {
+            if (A[left + 1] >= A[right - 1]) {
+                left++;
+                sum += A[left];
+            } else {
+                right--;
+                sum += A[right];
+            }
+        }
+    }
+}
