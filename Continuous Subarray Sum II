@@ -13,6 +13,7 @@ public class Solution {
         int[] r0 = new int[]{0, 0};
         int sum0 = A[0];
         int max0 = A[0];
+        int totalSum = A[0];
         for (int i = 1; i < A.length; i++) {
             if (sum0 < 0) {
                 s0 = i;
@@ -22,22 +23,33 @@ public class Solution {
                 r0[0] = s0; r0[1] = i;
             }
             max0 = Math.max(sum0, max0);
+            totalSum += A[i];
         }
         
-        //max subarray starts from index 0
-        int left = 0;
-        int right = A.length - 1;
-        int sum = A[left] + A[right];
-        int max = sum;
-        int r1 = new int[2];
-        while (left + 1 < right) {
-            if (A[left + 1] >= A[right - 1]) {
-                left++;
-                sum += A[left];
-            } else {
-                right--;
-                sum += A[right];
+        //find the min subarray  
+        int s1 = 0;
+        int[] r1 = new int[]{0, 0};
+        int sum1 = A[0];
+        int min1 = A[0];
+        for (int i = 1; i < A.length; i++) {
+            if (sum1 > 0) {
+                s1 = i;
             }
+            sum1 = Math.min(sum1 + A[i], A[i]);
+            if (sum1 < min1) {
+                r1[0] = s1; r1[1] = i;
+            }
+            min1 = Math.min(sum1, min1);
+        }
+        
+        ArrayList<Integer> result = new ArrayList<>();
+        //if totalSum == min1 means it's all negative values and max0 would be negative
+        if (max0 >= totalSum - min1 || totalSum == min1) {
+            result.add(r0[0]);  result.add(r0[1]);
+            return result;
+        } else {
+            result.add(r1[1] + 1);  result.add(r1[0] - 1);
+            return result;
         }
     }
 }
