@@ -1,0 +1,55 @@
+public class Solution {
+    /**
+     * @param matrix: a matrix of integers
+     * @param k: an integer
+     * @return: the kth smallest number in the matrix
+     */
+    public class Node{
+        int row;
+        int col;
+        int val;
+        public Node(int row, int col, int val) {
+            this.row = row;
+            this.col = col;
+            this.val = val;
+        }
+    }
+    public int kthSmallest(int[][] matrix, int k) {
+        // write your code here
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0 || k > matrix.length * matrix[0].length) {
+            return 0;
+        }
+        //construct a comparator
+        Comparator<Node> cmp = new Comparator<Node>(){
+            public int compare(Node n1, Node n2) {
+                return n1.val - n2.val;
+            }    
+        };
+        PriorityQueue<Node> queue = new PriorityQueue<Node>(k, cmp);
+        boolean[][] visited = new boolean[matrix.length][matrix[0].length];
+        visited[0][0] = true;
+        queue.add(new Node(0, 0, matrix[0][0]));
+        //stops when k == 1, which is the top of the queue
+        while (k != 1) {
+            Node top = queue.remove();
+            addToQueue(top, queue, visited, matrix);
+            k--;
+        }
+        return queue.peek().val;
+    }
+    
+    public void addToQueue(Node node, PriorityQueue<Node> queue, boolean[][] visited, int[][] matrix) {
+        //add node's next right
+        if (node.col + 1 < matrix[0].length && visited[node.row][node.col + 1] == false) {
+            Node right = new Node(node.row, node.col + 1, matrix[node.row][node.col + 1]);
+            queue.add(right);
+            visited[node.row][node.col + 1] = true;
+        }
+        //add node's next bottom
+        if (node.row + 1 < matrix.length && visited[node.row + 1][node.col] == false) {
+            Node bottom = new Node(node.row + 1, node.col, matrix[node.row + 1][node.col]);
+            queue.add(bottom);
+            visited[node.row + 1][node.col] = true;
+        }
+    }
+}
