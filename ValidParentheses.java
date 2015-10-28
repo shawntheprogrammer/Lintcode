@@ -21,7 +21,7 @@ public class ValidParentheses {
               stack.pop();
           }
       }
-      return !stack.isEmpty();
+      return stack.isEmpty();
     }
     
     public boolean isMatch(char a, char b) {
