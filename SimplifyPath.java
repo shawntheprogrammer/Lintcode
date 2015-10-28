@@ -6,46 +6,29 @@
 */
 public class Solution {
     public String simplifyPath(String path) {
-        if (path == null || path.length() == 0) {
-            return "";
+        // Write your code here
+        if (path == null || path.length() == 0 || path.equals("/")) {
+            return path;
         }
-        ArrayList<String> list = new ArrayList<>();
-        int start = 0;
-        // split the path by '/'
-        for (int i = 0; i < path.length(); i++)  {
-            if (path.charAt(i) == '/') {
-                if (start != i) {
-                    list.add(path.substring(start, i));
-                }
-                start = i + 1;
-            }
-        }
-        // add the rightmost part if last char is not '/'
-        if (start != path.length()) {
-            list.add(path.substring(start));
-        }
-        // add things to stack, ignore "."
-        // back up one level if it's ".." and stack is not empty, otherwise we are at the root
+        String[] arr = path.split("/");
         Stack<String> stack = new Stack<>();
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).equals(".")) {
+        for (int i = 0; i < arr.length; i++) {
+            String token = arr[i];
+            if (token.equals(".") || token.length() == 0) {
                 continue;
-            } else if (list.get(i).equals("..")) {
-                if (!stack.isEmpty()) {
+            } else if (token.equals("..")) {
+                if (!stack.isEmpty())
                     stack.pop();
-                }
             } else {
-                stack.push(list.get(i));
+                stack.push(token);
             }
         }
-        // add things up to the result
         String res = "";
+        if (stack.isEmpty()) {
+            return "/";
+        }
         while (!stack.isEmpty()) {
             res = "/" + stack.pop() + res;
-        }
-        // if empty path, stay in root
-        if (res.length() == 0) {
-            return  "/";
         }
         return res;
     }

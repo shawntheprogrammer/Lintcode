@@ -1,6 +1,8 @@
+import java.util.Stack;
+
 /*  Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
-	Example
-	The brackets must close in the correct order, "()" and "()[]{}" are all valid but "(]" and "([)]" are not.
+        Example
+        The brackets must close in the correct order, "()" and "()[]{}" are all valid but "(]" and "([)]" are not.
 */
 
 public class ValidParentheses {
@@ -25,18 +27,9 @@ public class ValidParentheses {
     }
     
     public boolean isMatch(char a, char b) {
-        if (a == null || b == null) {
-            return false;
-        }
         if ((a == '(' && b == ')') || (a == '[' && b == ']') || (a == '{' && b == '}')){
             return true;
         }
         return false;
-    }
-    
-    @Test
-    public void test() {
-        String s = "()";
-        assertTrue(isValidParenthese(s));
     }
 }
